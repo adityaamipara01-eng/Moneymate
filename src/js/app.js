@@ -41,24 +41,7 @@ async function saveProfileToSupabase(user) {
         console.log('Profile Saved:', data);
     }
 }
-async function saveProfileToSupabase(user) {
-    const { data, error } = await supabaseClient
-        .from('profiles')
-        .upsert([
-            {
-                full_name: user.name,
-                phone: user.phoneNumber,
-                upi_id: user.upiId,
-                profile_photo: user.avatar,
-                qr_code_url: user.upiQr,
-                email: user.email
-            }
-        ])
-        .select();
 
-    console.log("PROFILE DATA:", data);
-    console.log("PROFILE ERROR:", error);
-}
 async function saveTransactionToSupabase(transaction) {
 
     const { data, error } = await supabaseClient
