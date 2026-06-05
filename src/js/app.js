@@ -202,17 +202,15 @@ if (latestTransaction) {
             renderApp();
         }, 'Updating Transaction...');
     } else if (hasNewDebt || hasUpdatedDebt) {
-        showPageLoader(() => {
-            renderApp();
-        }, 'Processing Debts...');
-    }} else if (profileUpdated) {
-
+    showPageLoader(() => {
+        renderApp();
+    }, 'Processing Debts...');
+} else if (profileUpdated) {
     saveProfileToSupabase(state.user);
 
     showPageLoader(() => {
         renderApp();
     }, 'Saving Profile Changes...');
-
 } else {
     renderApp();
 }
