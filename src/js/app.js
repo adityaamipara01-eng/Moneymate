@@ -85,7 +85,7 @@ async function saveDebtToSupabase(debt) {
         .from('debts')
         .insert([
             {
-                borrower_id: debt.person,
+                borrow_id: debt.person,
                 lender_id: state.user.email,
                 amount: debt.amount,
                 note: debt.note,
