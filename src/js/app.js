@@ -18,6 +18,19 @@ const supabaseClient = supabase.createClient(
   supabaseUrl,
   supabaseKey
 );
+window.supabaseClient = supabaseClient;
+
+async function testSupabase() {
+    const { data, error } = await supabaseClient
+        .from('transactions')
+        .select('*')
+        .limit(1);
+
+    console.log('Supabase Test:', data);
+    console.log('Supabase Error:', error);
+}
+
+testSupabase();
 
 // Pre-populated high-quality dummy data
 const initialDummyState = {
