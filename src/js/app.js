@@ -227,7 +227,7 @@ if (latestTransaction) {
     showPageLoader(() => {
         renderApp();
     }, 'Processing Debts...');
-} } else if (profileUpdated) {
+}  else if (profileUpdated) {
     saveProfileToSupabase(state.user);
 
     showPageLoader(() => {
