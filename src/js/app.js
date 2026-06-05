@@ -22,7 +22,7 @@ window.supabaseClient = supabaseClient;
 // Save Profile Data to Supabase
 async function saveProfileToSupabase(user) {
     const { data, error } = await supabaseClient
-        .from('profile')
+        .from('profiles')
         .upsert([
             {
                 full_name: user.name,
@@ -40,6 +40,24 @@ async function saveProfileToSupabase(user) {
     } else {
         console.log('Profile Saved:', data);
     }
+}
+async function saveProfileToSupabase(user) {
+    const { data, error } = await supabaseClient
+        .from('profiles')
+        .upsert([
+            {
+                full_name: user.name,
+                phone: user.phoneNumber,
+                upi_id: user.upiId,
+                profile_photo: user.avatar,
+                qr_code_url: user.upiQr,
+                email: user.email
+            }
+        ])
+        .select();
+
+    console.log("PROFILE DATA:", data);
+    console.log("PROFILE ERROR:", error);
 }
 async function saveTransactionToSupabase(transaction) {
 
@@ -204,16 +222,16 @@ if (latestTransaction) {
         showPageLoader(() => {
             renderApp();
         }, 'Processing Debts...');
-    } } else if (profileUpdated) {
+    }} else if (profileUpdated) {
 
     saveProfileToSupabase(state.user);
 
     showPageLoader(() => {
         renderApp();
     }, 'Saving Profile Changes...');
+
 } else {
-        renderApp();
-    }
+    renderApp();
 }
 
 export function logout() {
