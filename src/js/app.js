@@ -80,6 +80,26 @@ async function saveTransactionToSupabase(transaction) {
         console.log('Transaction Saved');
     }
 }
+async function saveDebtToSupabase(debt) {
+    const { data, error } = await supabaseClient
+        .from('debts')
+        .insert([
+            {
+                borrower_id: debt.borrowerEmail,
+                lender_id: debt.lenderEmail,
+                amount: debt.amount,
+                note: debt.note,
+                due_date: debt.dueDate,
+                status: debt.status || 'pending'
+            }
+        ]);
+
+    if (error) {
+        console.error('Debt Save Error:', error);
+    } else {
+        console.log('Debt Saved:', data);
+    }
+}
 async function testSupabase() {
     const { data, error } = await supabaseClient
         .from('transactions')
@@ -175,6 +195,7 @@ export function setState(newState) {
   const hasNewNotification =
     newState.notifications &&
     newState.notifications.length !== state.notifications.length;
+  
 
     const pageChanged = newState.currentPage && newState.currentPage !== state.currentPage;
     const hasNewTransaction = newState.transactions && newState.transactions.length !== state.transactions.length;
@@ -223,11 +244,25 @@ if (latestTransaction) {
         showPageLoader(() => {
             renderApp();
         }, 'Updating Transaction...');
-    } else if (hasNewDebt || hasUpdatedDebt) {
+    } } else if (hasNewDebt) {
+
+    const latestDebt =
+        state.debts[state.debts.length - 1];
+
+    if (latestDebt) {
+        saveDebtToSupabase(latestDebt);
+    }
+
     showPageLoader(() => {
         renderApp();
-    }, 'Processing Debts...');
-}  else if (profileUpdated) {
+    }, 'Saving Debt...');
+
+} else if (hasUpdatedDebt) {
+
+    showPageLoader(() => {
+        renderApp();
+    }, 'Updating Debt...');
+} else if (profileUpdated) {
     saveProfileToSupabase(state.user);
 
     showPageLoader(() => {
