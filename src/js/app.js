@@ -1,4 +1,3 @@
-// Kharcha UI Application - Main Script
 import { renderSidebar } from './components/Sidebar.js';
 import { renderLandingPage } from './pages/LandingPage.js';
 import { renderLoginPage } from './pages/LoginPage.js';
@@ -10,6 +9,70 @@ import { renderLendingPage } from './pages/LendingPage.js';
 import { renderNotificationsPage } from './pages/NotificationsPage.js';
 import { renderReportsPage } from './pages/ReportsPage.js';
 import { renderProfilePage } from './pages/ProfilePage.js';
+
+const supabaseUrl = "https://wyfnjkvvtewwiepzxtvs.supabase.co";
+
+const supabaseKey = "sb_publishable_vAnsyhBsvS3yYVS5gZUDQg_dcBZPRoZ";
+
+const supabaseClient = supabase.createClient(
+  supabaseUrl,
+  supabaseKey
+);
+window.supabaseClient = supabaseClient;
+// Save Profile Data to Supabase
+async function saveProfileToSupabase(user) {
+    const { data, error } = await supabaseClient
+        .from('profiles')
+        .upsert([
+            {
+                full_name: user.name,
+                phone: user.phoneNumber,
+                upi_id: user.upiId,
+                profile_photo: user.avatar,
+                qr_code_url: user.upiQr,
+                email: user.email
+            }
+        ])
+        .select();
+
+    if (error) {
+        console.error('Profile Save Error:', error);
+    } else {
+        console.log('Profile Saved:', data);
+    }
+}
+
+async function saveTransactionToSupabase(transaction) {
+
+    const { data, error } = await supabaseClient
+        .from('transactions')
+        .insert([
+            {
+                type: transaction.type,
+                catagory: transaction.category,
+                description: transaction.description,
+                amount: transaction.amount,
+                transaction_date: transaction.date
+            }
+        ]);
+
+    if (error) {
+        console.error('Transaction Save Error:', error);
+    } else {
+        console.log('Transaction Saved');
+    }
+}
+async function testSupabase() {
+    const { data, error } = await supabaseClient
+        .from('transactions')
+        .select('*')
+        .limit(1);
+
+    console.log('Supabase Test:', data);
+    console.log('Supabase Error:', error);
+}
+
+testSupabase();
 
 // Pre-populated high-quality dummy data
 const initialDummyState = {
@@ -73,12 +136,12 @@ export function showPageLoader(callback, text = 'Loading Kharcha...') {
     const loader = ensureLoader();
     const textEl = loader.querySelector('.loader-text');
     if (textEl) textEl.innerText = text;
-    
+ 
     loader.classList.add('active');
-    
+ 
     setTimeout(() => {
         if (callback) callback();
-        
+ 
         setTimeout(() => {
             loader.classList.remove('active');
         }, 200);
@@ -104,10 +167,10 @@ export function setState(newState) {
     } catch (e) {
         console.error('Failed to save state to localStorage', e);
     }
-    
+ 
     // Sync theme attributes in DOM
     document.documentElement.setAttribute('data-theme', state.theme);
-    
+ 
     if (pageChanged) {
         let loadingText = 'Processing...';
         if (newState.currentPage === 'dashboard') loadingText = 'Opening Dashboard...';
@@ -120,11 +183,17 @@ export function setState(newState) {
         else if (newState.currentPage === 'lending') loadingText = 'Loading Debts & Lending...';
         else if (newState.currentPage === 'notifications') loadingText = 'Opening Notifications...';
         else if (newState.currentPage === 'landing') loadingText = 'Opening Home Page...';
-        
+ 
         showPageLoader(() => {
             renderApp();
         }, loadingText);
     } else if (hasNewTransaction) {
+      const latestTransaction =
+    state.transactions[state.transactions.length - 1];
+
+if (latestTransaction) {
+    saveTransactionToSupabase(latestTransaction);
+}
         showPageLoader(() => {
             renderApp();
         }, 'Saving Transaction...');
@@ -133,16 +202,17 @@ export function setState(newState) {
             renderApp();
         }, 'Updating Transaction...');
     } else if (hasNewDebt || hasUpdatedDebt) {
-        showPageLoader(() => {
-            renderApp();
-        }, 'Processing Debts...');
-    } else if (profileUpdated) {
-        showPageLoader(() => {
-            renderApp();
-        }, 'Saving Profile Changes...');
-    } else {
+    showPageLoader(() => {
         renderApp();
-    }
+    }, 'Processing Debts...');
+} else if (profileUpdated) {
+    saveProfileToSupabase(state.user);
+
+    showPageLoader(() => {
+        renderApp();
+    }, 'Saving Profile Changes...');
+} else {
+    renderApp();
 }
 
 export function logout() {
@@ -156,10 +226,10 @@ export function logout() {
         } catch (e) {
             console.error('Failed to save state to localStorage', e);
         }
-        
+ 
         // Sync theme attributes in DOM
         document.documentElement.setAttribute('data-theme', state.theme);
-        
+ 
         // Re-render
         renderApp();
     }, 'Logging out safely...');
@@ -201,16 +271,16 @@ export function renderApp() {
                         <span class="brand-name">Kharcha</span>
                     </div>
                     <button class="menu-toggle-btn" id="menu-toggle-btn">
-                        <i data-lucide="menu"></i>
+                        <i data-lucide="menu">
                     </button>
                 </div>
-                
+ 
                 <!-- Sidebar Component (Desktop and Mobile drawer) -->
                 <aside class="app-sidebar" id="app-sidebar"></aside>
-                
+ 
                 <!-- Mobile sidebar backdrop overlay -->
                 <div class="sidebar-overlay" id="sidebar-overlay"></div>
-                
+ 
                 <!-- Page container and dynamic content -->
                 <main class="main-content" id="main-content-view"></main>
             </div>
