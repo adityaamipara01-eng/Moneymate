@@ -244,7 +244,7 @@ if (latestTransaction) {
         showPageLoader(() => {
             renderApp();
         }, 'Updating Transaction...');
-    } } else if (hasNewDebt) {
+    }  else if (hasNewDebt) {
 
     const latestDebt =
         state.debts[state.debts.length - 1];
