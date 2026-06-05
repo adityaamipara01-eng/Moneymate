@@ -19,7 +19,48 @@ const supabaseClient = supabase.createClient(
   supabaseKey
 );
 window.supabaseClient = supabaseClient;
+// Save Profile Data to Supabase
+async function saveProfileToSupabase(user) {
+    const { data, error } = await supabaseClient
+        .from('profile')
+        .upsert([
+            {
+                full_name: user.name,
+                phone: user.phoneNumber,
+                upi_id: user.upiId,
+                profile_photo: user.avatar,
+                qr_code_url: user.upiQr,
+                email: user.email
+            }
+        ])
+        .select();
 
+    if (error) {
+        console.error('Profile Save Error:', error);
+    } else {
+        console.log('Profile Saved:', data);
+    }
+}
+async function saveTransactionToSupabase(transaction) {
+
+    const { data, error } = await supabaseClient
+        .from('transactions')
+        .insert([
+            {
+                type: transaction.type,
+                catagory: transaction.category,
+                description: transaction.description,
+                amount: transaction.amount,
+                transaction_date: transaction.date
+            }
+        ]);
+
+    if (error) {
+        console.error('Transaction Save Error:', error);
+    } else {
+        console.log('Transaction Saved');
+    }
+}
 async function testSupabase() {
     const { data, error } = await supabaseClient
         .from('transactions')
@@ -146,6 +187,12 @@ export function setState(newState) {
             renderApp();
         }, loadingText);
     } else if (hasNewTransaction) {
+      const latestTransaction =
+    state.transactions[state.transactions.length - 1];
+
+if (latestTransaction) {
+    saveTransactionToSupabase(latestTransaction);
+}
         showPageLoader(() => {
             renderApp();
         }, 'Saving Transaction...');
@@ -157,11 +204,14 @@ export function setState(newState) {
         showPageLoader(() => {
             renderApp();
         }, 'Processing Debts...');
-    } else if (profileUpdated) {
-        showPageLoader(() => {
-            renderApp();
-        }, 'Saving Profile Changes...');
-    } else {
+    } } else if (profileUpdated) {
+
+    saveProfileToSupabase(state.user);
+
+    showPageLoader(() => {
+        renderApp();
+    }, 'Saving Profile Changes...');
+} else {
         renderApp();
     }
 }
