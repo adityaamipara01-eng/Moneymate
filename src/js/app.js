@@ -214,8 +214,8 @@ if (latestTransaction) {
 } else {
     renderApp();
 }
-
-export function logout() {
+}
+ function logout() {
     showPageLoader(() => {
         state = {
             ...initialDummyState,
