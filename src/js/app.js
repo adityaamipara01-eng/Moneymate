@@ -271,7 +271,7 @@ export function renderApp() {
                         <span class="brand-name">Kharcha</span>
                     </div>
                     <button class="menu-toggle-btn" id="menu-toggle-btn">
-                        <i data-lucide="menu">
+                        <i data-lucide="menu"></i>
                     </button>
                 </div>
  
