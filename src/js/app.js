@@ -61,14 +61,14 @@ async function saveNotificationToSupabase(notification) {
 }
 
 async function saveTransactionToSupabase(transaction) {
-
     const { data, error } = await supabaseClient
         .from('transactions')
         .insert([
             {
+                user_id: state.user.email,
                 type: transaction.type,
-                catagory: transaction.category,
-                description: transaction.description,
+                category: transaction.category,
+                description: transaction.name,
                 amount: transaction.amount,
                 transaction_date: transaction.date
             }
