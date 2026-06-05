@@ -41,6 +41,24 @@ async function saveProfileToSupabase(user) {
         console.log('Profile Saved:', data);
     }
 }
+async function saveNotificationToSupabase(notification) {
+    const { data, error } = await supabaseClient
+        .from('notifications')
+        .insert([
+            {
+                user_id: state.user.email, // or actual user UUID
+                title: notification.title,
+                message: notification.message,
+                is_read: notification.read || false
+            }
+        ]);
+
+    if (error) {
+        console.error('Notification Save Error:', error);
+    } else {
+        console.log('Notification Saved');
+    }
+}
 
 async function saveTransactionToSupabase(transaction) {
 
@@ -154,6 +172,10 @@ export function getState() {
 }
 
 export function setState(newState) {
+  const hasNewNotification =
+    newState.notifications &&
+    newState.notifications.length !== state.notifications.length;
+
     const pageChanged = newState.currentPage && newState.currentPage !== state.currentPage;
     const hasNewTransaction = newState.transactions && newState.transactions.length !== state.transactions.length;
     const hasUpdatedTransaction = newState.transactions && newState.transactions.length === state.transactions.length && JSON.stringify(newState.transactions) !== JSON.stringify(state.transactions);
@@ -205,15 +227,25 @@ if (latestTransaction) {
     showPageLoader(() => {
         renderApp();
     }, 'Processing Debts...');
-} else if (profileUpdated) {
+} } else if (profileUpdated) {
     saveProfileToSupabase(state.user);
 
     showPageLoader(() => {
         renderApp();
     }, 'Saving Profile Changes...');
+} else if (hasNewNotification) {
+
+    const latestNotification = state.notifications[0];
+
+    if (latestNotification) {
+        saveNotificationToSupabase(latestNotification);
+    }
+
+    showPageLoader(() => {
+        renderApp();
+    }, 'Saving Notification...');
 } else {
     renderApp();
-}
 }
 export function logout() {
     showPageLoader(() => {
