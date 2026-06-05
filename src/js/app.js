@@ -247,6 +247,7 @@ if (latestTransaction) {
 } else {
     renderApp();
 }
+}
 export function logout() {
     showPageLoader(() => {
         state = {
