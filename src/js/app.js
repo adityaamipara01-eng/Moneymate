@@ -61,9 +61,18 @@ async function loadUserData() {
 
     isLoadingFromSupabase = true;
 
-    setState({
-        transactions: transactions || []
-    });
+    const formattedTransactions = (transactions || []).map(t => ({
+    id: t.id,
+    type: t.type,
+    category: t.category,
+    amount: t.amount,
+    name: t.description,
+    date: t.transaction_date
+}));
+
+setState({
+    transactions: formattedTransactions
+});
 
     isLoadingFromSupabase = false;
 }
@@ -290,7 +299,7 @@ export function setState(newState) {
     if (!isLoadingFromSupabase) {
 
         const latestTransaction =
-            state.transactions[state.transactions.length - 1];
+    state.transactions[0];
 
         if (latestTransaction) {
             saveTransactionToSupabase(latestTransaction);
