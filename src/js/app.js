@@ -67,7 +67,6 @@ async function loadUserData() {
 
     isLoadingFromSupabase = false;
 }
-
 async function deleteTransactionFromSupabase(id) {
 
     console.log("DELETE CALLED:", id);
