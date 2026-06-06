@@ -230,7 +230,7 @@ export function renderExpensePage(container, state) {
     const submitBtn = document.getElementById('expense-submit-btn');
     const actionsWrapper = document.getElementById('form-actions-wrapper');
 
-    form.onsubmit = (e) => {
+    form.onsubmit = async (e) => {
         e.preventDefault();
         const name = document.getElementById('exp-p-name').value;
         const amount = parseFloat(document.getElementById('exp-p-amount').value);
