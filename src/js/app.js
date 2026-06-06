@@ -89,6 +89,23 @@ async function checkSession() {
         renderApp();
     }
 }
+async function saveTransactionToSupabase(transaction) {
+
+    console.log("SAVE CALLED", transaction);
+
+    const { data, error } = await supabaseClient
+        .from('transactions')
+        .insert([
+            {
+                user_id: state.user.email,
+                type: transaction.type,
+                category: transaction.category,
+                description: transaction.name,
+                amount: transaction.amount,
+                transaction_date: transaction.date
+            }
+        ]);
+}
 
 async function saveTransactionToSupabase(transaction) {
 
