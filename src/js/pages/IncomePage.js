@@ -293,6 +293,7 @@ export function renderIncomePage(container, state) {
 
     // Delete actions
   // Delete actions
+// Delete actions
 const delBtns = container.querySelectorAll('.delete-income-btn');
 
 delBtns.forEach(btn => {
@@ -301,8 +302,11 @@ delBtns.forEach(btn => {
 
         const id = btn.getAttribute('data-id');
 
-        const targetTx =
-            state.transactions.find(t => t.id === id);
+        const targetTx = state.transactions.find(
+            t => t.id === id
+        );
+
+        if (!targetTx) return;
 
         if (confirm(`Delete income "${targetTx.name}"?`)) {
 
