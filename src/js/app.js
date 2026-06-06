@@ -93,7 +93,9 @@ async function deleteTransactionFromSupabase(id) {
 }
 export async function updateTransactionInSupabase(id, transaction) {
 
-    const { error } = await supabaseClient
+    console.log('Updating ID:', id);
+
+    const { data, error } = await supabaseClient
         .from('transactions')
         .update({
             description: transaction.name,
@@ -101,12 +103,13 @@ export async function updateTransactionInSupabase(id, transaction) {
             category: transaction.category,
             transaction_date: transaction.date
         })
-        .eq('id', id);
+        .eq('id', id)
+        .select();
+
+    console.log('Updated rows:', data);
 
     if (error) {
         console.error('Update Error:', error);
-    } else {
-        console.log('Transaction Updated');
     }
 }
 export async function deleteTransaction(transactionId) {
