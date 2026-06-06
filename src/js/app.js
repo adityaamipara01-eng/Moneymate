@@ -44,38 +44,37 @@ async function saveNotificationToSupabase(notification) {
 }
 async function loadUserData() {
 
-    const {
-        data: { user }
-    } = await supabaseClient.auth.getUser();
+    const email = state.user.email;
 
-    if (!user) return;
+    if (!email) {
+        console.log("No email found");
+        return;
+    }
 
-   const { data: transactions } = await supabaseClient
-    .from('transactions')
-    .select('*')
-    .eq('user_id', user.email);
+    const { data: transactions } = await supabaseClient
+        .from('transactions')
+        .select('*')
+        .eq('user_id', email);
 
-const { data: notifications } = await supabaseClient
-    .from('notifications')
-    .select('*')
-    .eq('user_id', user.email);
+    const { data: notifications } = await supabaseClient
+        .from('notifications')
+        .select('*')
+        .eq('user_id', email);
+
+    console.log("Transactions:", transactions);
+
     setState({
         transactions: transactions || [],
         notifications: notifications || []
     });
 }
-async function checkSession() { 
+async function checkSession() {
 
-  
-
-    const {
-        data: { session }
-    } = await supabaseClient.auth.getSession();
-
-    if (session) {  
-
-        state.isAuthenticated = true;
-        state.currentPage = 'dashboard';
+    if (
+        state.isAuthenticated &&
+        state.user &&
+        state.user.email
+    ) {
 
         await loadUserData();
 
@@ -93,7 +92,7 @@ async function saveTransactionToSupabase(transaction) {
         .from('transactions')
         .insert([
             {
-                user_id: user.id,
+                user_id: state.user.email
                 type: transaction.type,
                 category: transaction.category,
                 description: transaction.name,
