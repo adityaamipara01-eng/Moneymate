@@ -350,7 +350,7 @@ export function renderExpensePage(container, state) {
             const targetTx = state.transactions.find(t => t.id === id);
             
             if (confirm(`Delete expense log "${targetTx.name}"?`)) {
-                const filteredTxs = state.transactions.filter(t => t.id !== id);
+                await deleteTransaction(id);
                 
                 const deletedNotif = {
                     id: 'n-' + Math.random().toString(36).substr(2, 9),
@@ -372,10 +372,14 @@ export function renderExpensePage(container, state) {
                     if (cancelBtn) cancelBtn.remove();
                 }
                 
-                setState({ 
-                    transactions: filteredTxs, 
-                    notifications: [deletedNotif, ...state.notifications]
-                });
+                   await deleteTransaction(id);
+
+setState({
+    notifications: [
+        deletedNotif,
+        ...state.notifications
+    ]
+});
             }
         };
     });
