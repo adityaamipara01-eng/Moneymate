@@ -63,10 +63,14 @@ async function loadUserData() {
 
     console.log("Transactions:", transactions);
 
-    setState({
-        transactions: transactions || [],
-        notifications: notifications || []
-    });
+   isLoadingFromSupabase = true;
+
+setState({
+    transactions: transactions || [],
+    notifications: notifications || []
+});
+
+isLoadingFromSupabase = false;
 }
 async function checkSession() {
 
@@ -161,7 +165,7 @@ const initialDummyState = {
 
 // Initialize state: check localStorage first
 let state = { ...initialDummyState };
-
+let isLoadingFromSupabase = false;
 try {
     const savedState = localStorage.getItem('moneymate_state');
     if (savedState) {
@@ -257,13 +261,17 @@ export function setState(newState) {
         showPageLoader(() => {
             renderApp();
         }, loadingText);
-    } else if (hasNewTransaction) {
-      const latestTransaction =
-    state.transactions[state.transactions.length - 1];
+    }} else if (hasNewTransaction) {
 
-if (latestTransaction) {
-    saveTransactionToSupabase(latestTransaction);
-}
+    if (!isLoadingFromSupabase) {
+
+        const latestTransaction =
+            state.transactions[state.transactions.length - 1];
+
+        if (latestTransaction) {
+            saveTransactionToSupabase(latestTransaction);
+        }
+    }
         showPageLoader(() => {
             renderApp();
         }, 'Saving Transaction...');
@@ -299,9 +307,9 @@ if (latestTransaction) {
 
     const latestNotification = state.notifications[0];
 
-    if (latestNotification) {
-        saveNotificationToSupabase(latestNotification);
-    }
+ if (!isLoadingFromSupabase && latestNotification) {
+    saveNotificationToSupabase(latestNotification);
+}
 
     showPageLoader(() => {
         renderApp();
