@@ -72,7 +72,7 @@ setState({
     notifications: notifications || []
 });
 
-return;
+
 
 isLoadingFromSupabase = false;
 }
@@ -225,7 +225,7 @@ export function showPageLoader(callback, text = 'Loading Kharcha...') {
 export function getState() {
     return state;
 }
-let isLoadingFromSupabase = false;
+
 
 export function setState(newState) {
   const hasNewNotification =
@@ -266,7 +266,7 @@ export function setState(newState) {
         showPageLoader(() => {
             renderApp();
         }, loadingText);
-    }} else if (hasNewTransaction) {
+    } else if (hasNewTransaction) {
 
     if (!isLoadingFromSupabase) {
 
