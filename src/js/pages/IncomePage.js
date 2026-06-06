@@ -326,4 +326,5 @@ delBtns.forEach(btn => {
         }
     };
 
-};
+});
+}
