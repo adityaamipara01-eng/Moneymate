@@ -65,7 +65,7 @@ async function loadUserData() {
 
    isLoadingFromSupabase = true;
 
-isLoadingFromSupabase = true;
+
 
 setState({
     transactions: transactions || [],
