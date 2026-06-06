@@ -95,10 +95,10 @@ export async function deleteTransaction(transactionId) {
 
     await deleteTransactionFromSupabase(transactionId);
 
-    const updatedTransactions =
-        state.transactions.filter(
-            t => t.id !== transactionId
-        );
+  const updatedTransactions =
+    state.transactions.filter(
+        t => String(t.id) !== String(transactionId)
+    );
 
     setState({
         transactions: updatedTransactions
