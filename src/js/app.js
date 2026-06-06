@@ -20,28 +20,11 @@ const supabaseClient = supabase.createClient(
 );
 window.supabaseClient = supabaseClient;
 // Save Profile Data to Supabase
-async function saveProfileToSupabase(user) {
-    const { data, error } = await supabaseClient
-        .from('profiles')
-        .upsert([
-            {
-                full_name: user.name,
-                phone: user.phoneNumber,
-                upi_id: user.upiId,
-                profile_photo: user.avatar,
-                qr_code_url: user.upiQr,
-                email: user.email
-            }
-        ])
-        .select();
 
-    if (error) {
-        console.error('Profile Save Error:', error);
-    } else {
-        console.log('Profile Saved:', data);
-    }
-}
 async function saveNotificationToSupabase(notification) {
+  const {
+  data: { user }
+             } = await supabaseClient.auth.getUser();
     const { data, error } = await supabaseClient
         .from('notifications')
         .insert([
@@ -57,6 +40,45 @@ async function saveNotificationToSupabase(notification) {
         console.error('Notification Save Error:', error);
     } else {
         console.log('Notification Saved');
+    }
+}
+async function loadUserData() {
+
+    const {
+        data: { user }
+    } = await supabaseClient.auth.getUser();
+
+    if (!user) return;
+
+    const { data: transactions } = await supabaseClient
+        .from('transactions')
+        .select('*')
+        .eq('user_id', user.id);
+
+    const { data: notifications } = await supabaseClient
+        .from('notifications')
+        .select('*')
+        .eq('user_id', user.id);
+
+    setState({
+        transactions: transactions || [],
+        notifications: notifications || []
+    });
+}
+async function checkSession() {
+
+    const {
+        data: { session }
+    } = await supabaseClient.auth.getSession();
+
+    if (session) {
+
+        state.isAuthenticated = true;
+        state.currentPage = 'dashboard';
+
+        await loadUserData();
+
+        renderApp();
     }
 }
 
