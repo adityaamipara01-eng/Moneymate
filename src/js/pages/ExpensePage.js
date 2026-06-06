@@ -1,7 +1,8 @@
 // Expense Page Component
 import {
     setState,
-    deleteTransaction
+    deleteTransaction,
+    updateTransactionInSupabase
 } from '../app.js';
 import { renderProgressBar } from '../components/Charts.js';
 
@@ -244,6 +245,12 @@ export function renderExpensePage(container, state) {
         let notifMsg = '';
 
         if (editingId) {
+            await updateTransactionInSupabase(editingId, {
+    name,
+    amount,
+    category,
+    date
+});
             // Edit Mode
            updatedTxs = state.transactions.map(t => {
     if (String(t.id) === String(editingId)) {
