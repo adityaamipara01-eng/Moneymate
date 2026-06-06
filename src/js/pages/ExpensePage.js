@@ -1,7 +1,6 @@
 // Expense Page Component
 import { setState } from '../app.js';
 import { renderProgressBar } from '../components/Charts.js';
-import { deleteTransaction } from '../services/transactionService.js';
 
 export function renderExpensePage(container, state) {
     if (!container) return;
