@@ -292,9 +292,8 @@ export function renderIncomePage(container, state) {
     });
 
     // Delete actions
-    const delBtns = container.querySelectorAll('.delete-income-btn');
-    delBtns.forEach(btn => {
-       const delBtns = container.querySelectorAll('.delete-income-btn');
+  // Delete actions
+const delBtns = container.querySelectorAll('.delete-income-btn');
 
 delBtns.forEach(btn => {
 
@@ -328,4 +327,3 @@ delBtns.forEach(btn => {
     };
 
 });
-)}
