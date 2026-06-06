@@ -245,12 +245,12 @@ export function renderExpensePage(container, state) {
 
         if (editingId) {
             // Edit Mode
-            updatedTxs = state.transactions.map(t => {
-                if (t.id === editingId) {
-                    return { ...t, name, amount, category, date };
-                }
-                return t;
-            });
+           updatedTxs = state.transactions.map(t => {
+    if (String(t.id) === String(editingId)) {
+        return { ...t, name, amount, category, date };
+    }
+    return t;
+});
             notifTitle = 'Expense Updated';
             notifMsg = `Updated expense "${name}" values to ₹${amount.toLocaleString()}.`;
         } else {
