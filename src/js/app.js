@@ -82,7 +82,7 @@ async function deleteTransactionFromSupabase(id) {
         console.log("DELETE SUCCESS");
     }
 }
-async function deleteTransaction(transactionId) {
+export async function deleteTransaction(transactionId) {
 
     await deleteTransactionFromSupabase(transactionId);
 
