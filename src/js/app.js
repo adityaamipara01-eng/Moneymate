@@ -105,26 +105,6 @@ async function saveTransactionToSupabase(transaction) {
                 transaction_date: transaction.date
             }
         ]);
-}
-
-async function saveTransactionToSupabase(transaction) {
-
-    const {
-        data: { user }
-    } = await supabaseClient.auth.getUser();
-
-    const { data, error } = await supabaseClient
-        .from('transactions')
-        .insert([
-            {
-                user_id: state.user.email,
-                type: transaction.type,
-                category: transaction.category,
-                description: transaction.name,
-                amount: transaction.amount,
-                transaction_date: transaction.date
-            }
-        ]);
 
     if (error) {
         console.error('Transaction Save Error:', error);
@@ -132,6 +112,9 @@ async function saveTransactionToSupabase(transaction) {
         console.log('Transaction Saved');
     }
 }
+
+
+
 async function saveDebtToSupabase(debt) {
     const { data, error } = await supabaseClient
         .from('debts')
