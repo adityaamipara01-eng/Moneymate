@@ -92,7 +92,7 @@ async function saveTransactionToSupabase(transaction) {
         .from('transactions')
         .insert([
             {
-                user_id: state.user.email
+                user_id: state.user.email,
                 type: transaction.type,
                 category: transaction.category,
                 description: transaction.name,
