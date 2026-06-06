@@ -56,25 +56,40 @@ async function loadUserData() {
         .select('*')
         .eq('user_id', email);
 
-    const { data: notifications } = await supabaseClient
-        .from('notifications')
-        .select('*')
-        .eq('user_id', email);
+    console.log("Transactions from Supabase:");
+    console.table(transactions);
 
-    console.log("Transactions:", transactions);
+    isLoadingFromSupabase = true;
 
-   isLoadingFromSupabase = true;
+    setState({
+        transactions: transactions || []
+    });
 
+    isLoadingFromSupabase = false;
+}
 
+async function deleteTransactionFromSupabase(id) {
+    const { error } = await supabaseClient
+        .from('transactions')
+        .delete()
+        .eq('id', id);
 
-setState({
-    transactions: transactions || [],
-    notifications: notifications || []
-});
+    if (error) {
+        console.error('Delete Error:', error);
+    }
+}
+async function deleteTransaction(transactionId) {
 
+    await deleteTransactionFromSupabase(transactionId);
 
+    const updatedTransactions =
+        state.transactions.filter(
+            t => t.id !== transactionId
+        );
 
-isLoadingFromSupabase = false;
+    setState({
+        transactions: updatedTransactions
+    });
 }
 async function checkSession() {
 
