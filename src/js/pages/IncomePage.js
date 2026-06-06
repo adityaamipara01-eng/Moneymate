@@ -1,5 +1,6 @@
 // Income Page Component
 import { setState } from '../app.js';
+import { deleteTransaction } from '../app.js';
 
 export function renderIncomePage(container, state) {
     if (!container) return;
@@ -177,8 +178,10 @@ export function renderIncomePage(container, state) {
     const chips = container.querySelectorAll('[data-filter]');
     chips.forEach(chip => {
         chip.onclick = () => {
+            
             const filterVal = chip.getAttribute('data-filter');
             setState({ incomeFilter: filterVal });
+            
         };
     });
 
@@ -291,37 +294,38 @@ export function renderIncomePage(container, state) {
     // Delete actions
     const delBtns = container.querySelectorAll('.delete-income-btn');
     delBtns.forEach(btn => {
-        btn.onclick = () => {
-            const id = btn.getAttribute('data-id');
-            const targetTx = state.transactions.find(t => t.id === id);
-            
-            if (confirm(`Delete income "${targetTx.name}"?`)) {
-                const filteredTxs = state.transactions.filter(t => t.id !== id);
-                
-                const deletedNotif = {
-                    id: 'n-' + Math.random().toString(36).substr(2, 9),
-                    title: 'Income Deleted',
-                    message: `Removed income log "${targetTx.name}" of ₹${targetTx.amount.toLocaleString()}.`,
-                    date: 'Just now',
-                    type: 'info',
-                    read: false
-                };
+       const delBtns = container.querySelectorAll('.delete-income-btn');
 
-                // Clear editing state if the deleted item was currently being edited
-                if (form.getAttribute('data-editing-id') === id) {
-                    form.reset();
-                    form.removeAttribute('data-editing-id');
-                    formTitle.innerText = 'Record New Income';
-                    submitBtn.innerHTML = `<i data-lucide="plus-circle"></i> Save Transaction`;
-                    const cancelBtn = document.getElementById('cancel-edit-btn');
-                    if (cancelBtn) cancelBtn.remove();
-                }
-                
-                setState({ 
-                    transactions: filteredTxs, 
-                    notifications: [deletedNotif, ...state.notifications]
-                });
-            }
-        };
-    });
+delBtns.forEach(btn => {
+
+    btn.onclick = async () => {
+
+        const id = btn.getAttribute('data-id');
+
+        const targetTx =
+            state.transactions.find(t => t.id === id);
+
+        if (confirm(`Delete income "${targetTx.name}"?`)) {
+
+            await deleteTransaction(id);
+
+            const deletedNotif = {
+                id: 'n-' + Math.random().toString(36).substr(2, 9),
+                title: 'Income Deleted',
+                message: `Removed income log "${targetTx.name}".`,
+                date: 'Just now',
+                type: 'info',
+                read: false
+            };
+
+            setState({
+                notifications: [
+                    deletedNotif,
+                    ...state.notifications
+                ]
+            });
+        }
+    };
+
+});
 }
