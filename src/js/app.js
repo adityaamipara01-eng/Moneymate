@@ -65,10 +65,14 @@ async function loadUserData() {
 
    isLoadingFromSupabase = true;
 
+isLoadingFromSupabase = true;
+
 setState({
     transactions: transactions || [],
     notifications: notifications || []
 });
+
+return;
 
 isLoadingFromSupabase = false;
 }
@@ -221,6 +225,7 @@ export function showPageLoader(callback, text = 'Loading Kharcha...') {
 export function getState() {
     return state;
 }
+let isLoadingFromSupabase = false;
 
 export function setState(newState) {
   const hasNewNotification =
