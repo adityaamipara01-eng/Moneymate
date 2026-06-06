@@ -50,28 +50,29 @@ async function loadUserData() {
 
     if (!user) return;
 
-    const { data: transactions } = await supabaseClient
-        .from('transactions')
-        .select('*')
-        .eq('user_id', user.id);
+   const { data: transactions } = await supabaseClient
+    .from('transactions')
+    .select('*')
+    .eq('user_id', user.email);
 
-    const { data: notifications } = await supabaseClient
-        .from('notifications')
-        .select('*')
-        .eq('user_id', user.id);
-
+const { data: notifications } = await supabaseClient
+    .from('notifications')
+    .select('*')
+    .eq('user_id', user.email);
     setState({
         transactions: transactions || [],
         notifications: notifications || []
     });
 }
-async function checkSession() {
+async function checkSession() { 
+
+  
 
     const {
         data: { session }
     } = await supabaseClient.auth.getSession();
 
-    if (session) {
+    if (session) {  
 
         state.isAuthenticated = true;
         state.currentPage = 'dashboard';
@@ -83,11 +84,16 @@ async function checkSession() {
 }
 
 async function saveTransactionToSupabase(transaction) {
+
+    const {
+        data: { user }
+    } = await supabaseClient.auth.getUser();
+
     const { data, error } = await supabaseClient
         .from('transactions')
         .insert([
             {
-                user_id: state.user.email,
+                user_id: user.id,
                 type: transaction.type,
                 category: transaction.category,
                 description: transaction.name,
@@ -449,10 +455,16 @@ export function renderApp() {
         window.lucide.createIcons();
     }
 }
-
 // Start application when DOM is fully loaded
-document.addEventListener('DOMContentLoaded', () => {
-    showPageLoader(() => {
-        renderApp();
-    }, 'Launching Wallet...');
+document.addEventListener('DOMContentLoaded', async () => {
+
+    await checkSession();
+
+    if (!state.isAuthenticated) {
+        showPageLoader(() => {
+            renderApp();
+        }, 'Launching Wallet...');
+    }
+
 });
+// Start application when DOM is fully loaded
