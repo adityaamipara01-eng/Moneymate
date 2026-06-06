@@ -91,11 +91,29 @@ async function deleteTransactionFromSupabase(id) {
         console.log("DELETE SUCCESS");
     }
 }
+export async function updateTransactionInSupabase(id, transaction) {
+
+    const { error } = await supabaseClient
+        .from('transactions')
+        .update({
+            description: transaction.name,
+            amount: transaction.amount,
+            category: transaction.category,
+            transaction_date: transaction.date
+        })
+        .eq('id', id);
+
+    if (error) {
+        console.error('Update Error:', error);
+    } else {
+        console.log('Transaction Updated');
+    }
+}
 export async function deleteTransaction(transactionId) {
 
     await deleteTransactionFromSupabase(transactionId);
 
-  const updatedTransactions =
+const updatedTransactions =
     state.transactions.filter(
         t => String(t.id) !== String(transactionId)
     );
