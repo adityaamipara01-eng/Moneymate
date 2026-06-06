@@ -1,5 +1,8 @@
 // Expense Page Component
-import { setState } from '../app.js';
+import {
+    setState,
+    deleteTransaction
+} from '../app.js';
 import { renderProgressBar } from '../components/Charts.js';
 
 export function renderExpensePage(container, state) {
