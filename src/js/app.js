@@ -69,6 +69,9 @@ async function loadUserData() {
 }
 
 async function deleteTransactionFromSupabase(id) {
+
+    console.log("DELETE CALLED:", id);
+
     const { error } = await supabaseClient
         .from('transactions')
         .delete()
@@ -76,6 +79,8 @@ async function deleteTransactionFromSupabase(id) {
 
     if (error) {
         console.error('Delete Error:', error);
+    } else {
+        console.log("DELETE SUCCESS");
     }
 }
 async function deleteTransaction(transactionId) {
