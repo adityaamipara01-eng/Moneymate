@@ -231,7 +231,9 @@ export function renderExpensePage(container, state) {
     const actionsWrapper = document.getElementById('form-actions-wrapper');
 
     form.onsubmit = async (e) => {
+     
         e.preventDefault();
+           console.log("EXPENSE FORM SUBMITTED");
         const name = document.getElementById('exp-p-name').value;
         const amount = parseFloat(document.getElementById('exp-p-amount').value);
         const category = document.getElementById('exp-p-cat').value;
