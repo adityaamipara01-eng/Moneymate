@@ -71,7 +71,7 @@ async function loadUserData() {
 }));
 
 setState({
-    transactions: formattedTransactions
+    transactions: formattedTransactions || []
 });
 
     isLoadingFromSupabase = false;
@@ -153,7 +153,11 @@ async function saveTransactionToSupabase(transaction) {
                 amount: transaction.amount,
                 transaction_date: transaction.date
             }
-        ]);
+        ])
+        .select();
+
+    console.log("INSERT RESULT:", data);
+    console.log("INSERT ERROR:", error);
 
     if (error) {
         console.error('Transaction Save Error:', error);
@@ -161,7 +165,6 @@ async function saveTransactionToSupabase(transaction) {
         console.log('Transaction Saved');
     }
 }
-
 
 
 async function saveDebtToSupabase(debt) {
