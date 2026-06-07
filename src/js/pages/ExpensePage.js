@@ -7,6 +7,7 @@ import {
 import { renderProgressBar } from '../components/Charts.js';
 
 export function renderExpensePage(container, state) {
+    console.log("Expense Page Loaded");
     if (!container) return;
 
     const currency = state.user.currency;
