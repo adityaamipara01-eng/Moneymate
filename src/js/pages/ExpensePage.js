@@ -231,14 +231,27 @@ export function renderExpensePage(container, state) {
     const submitBtn = document.getElementById('expense-submit-btn');
     const actionsWrapper = document.getElementById('form-actions-wrapper');
 
-    form.onsubmit = async (e) => {
-     
-        e.preventDefault();
-           console.log("EXPENSE FORM SUBMITTED");
-        const name = document.getElementById('exp-p-name').value;
-        const amount = parseFloat(document.getElementById('exp-p-amount').value);
-        const category = document.getElementById('exp-p-cat').value;
-        const date = document.getElementById('exp-p-date').value;
+   form.onsubmit = async (e) => {
+
+    e.preventDefault();
+
+    console.log("STEP 1");
+
+    const name = document.getElementById('exp-p-name').value;
+    const amount = parseFloat(document.getElementById('exp-p-amount').value);
+    const category = document.getElementById('exp-p-cat').value;
+    const date = document.getElementById('exp-p-date').value;
+
+    console.log("STEP 2");
+    console.log("NAME:", name);
+    console.log("AMOUNT:", amount);
+    console.log("CATEGORY:", category);
+    console.log("DATE:", date);
+
+    const editingId = form.getAttribute('data-editing-id');
+
+    console.log("STEP 3");
+    console.log("EDITING ID:", editingId);
 
         // Check if editing or adding
         const editingId = form.getAttribute('data-editing-id');
